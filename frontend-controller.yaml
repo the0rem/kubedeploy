@@ -1,0 +1,40 @@
+
+  kind: ReplicationController
+  apiVersion: v1beta3
+  metadata:
+    name: frontend
+    labels:
+      name: frontend
+    spec:
+      replicas: 3
+      selector:
+        name: frontend
+      template:
+        metadata:
+          labels:
+            name: frontend
+        spec:
+          containers:
+            - name: php-redis
+              image: the0rem/laravel-kubernetes:latest
+              # Make sure we always get the latest
+              imagePullPolicy: Always
+              ports:
+                - containerPort: 80
+                  protocol: TCP
+              volumeMounts: 
+                - name: ssh-key-volume
+                  mountPath: /etc/ssh-key-volume
+                  readOnly: true
+                - name: laravel-env-volume
+                  mountPath: /usr/share/nginx/html/.env
+                  readOnly: true
+          volumes: 
+            - name: ssh-key-volume
+              source: 
+                secret: 
+                  secretName: ssh-key-secret
+            - name: laravel-env-volume
+              source: 
+                hostPath: 
+                  path: "./{env}/frontend-ssh-keypair.yaml"
