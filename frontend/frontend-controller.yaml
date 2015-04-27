@@ -1,0 +1,71 @@
+
+kind: ReplicationController
+apiVersion: v1beta3
+metadata:
+  name: frontend
+  labels:
+    name: frontend
+  spec:
+    replicas: 3
+    selector:
+      name: frontend
+    template:
+      metadata:
+        labels:
+          name: frontend
+      spec:
+        containers:
+          - name: php-redis
+            image: the0rem/laravel-kubernetes:latest
+            # Make sure we always get the latest image
+            imagePullPolicy: Always
+            ports:
+              - containerPort: 80
+                protocol: TCP
+            volumeMounts: 
+              - name: ssh-key-volume
+                mountPath: /etc/ssh-key-volume
+                readOnly: true
+              - name: laravel-env-volume
+                mountPath: /usr/share/nginx/html/.env
+                readOnly: true
+            env:
+              - name: APP_DEBUG
+                value: true
+              - name: APP_URL
+                value: http://localhost:8080/
+              - name: APP_KEY
+                value: hi23h8hfh9Hhh8
+              - name: DB_HOST
+                value: $$_REDIS_MASTER_PORT_$$
+              - name: DB_DATABASE
+                value: cms
+              - name: DB_USERNAME
+                value: root
+              - name: DB_PASSWORD
+                value: root
+              - name: CACHE_DRIVER
+                value: redis
+              - name: SESSION_DRIVER
+                value: redis
+              - name: MAIL_DRIVER
+                value: log
+              - name: QUEUE_DRIVER
+                value: redis
+              - name: REDIS_HOST
+                value: $$_REDIS_MASTER_SERVICE_HOST_$$
+              - name: REDIS_PORT
+                value: $$_REDIS_MASTER_SERVICE_PORT_$$
+              - name: REDIS_DB
+                value: 0
+
+        volumes: 
+          - name: ssh-key-volume
+            source: 
+              secret: 
+                secretName: ssh-key-secret
+          - name: laravel-env-volume
+            source: 
+              hostPath: 
+                path: ./dev/frontend-ssh-keypair.yaml
+

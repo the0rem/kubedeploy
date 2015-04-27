@@ -3,12 +3,14 @@ kind: PersistentVolumeClaim
 apiVersion: v1beta3
 metadata: 
   name: mariadb-volume-claim
+  labels:
+    name: mariadb-volume-claim
 spec: 
   accessModes: 
     - ReadWriteOnce
     - ReadOnlyMany
   resources: 
     requests:
-      storage: 2GiB
+      storage: 2G
     limits:
-      storage: 5GiB
+      storage: 5G

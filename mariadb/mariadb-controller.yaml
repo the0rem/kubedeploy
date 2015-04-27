@@ -7,8 +7,8 @@ metadata:
     name: mariadb
 spec:
   containers:
-    - name: mariadb,
-      image: mariadb/10.1.17
+    - name: mariadb
+      image: mariadb:10.0.17
       ports:
         - containerPort: 3306
           protocol: TCP
@@ -19,7 +19,7 @@ spec:
           mountPath: /var/lib/mysql
       env:
         - name: MYSQL_ROOT_PASSWORD
-          value: {DB_PASSWORD}
+          value: root
   volumes:
     - name: mariadb-persistent-storage
       source:
