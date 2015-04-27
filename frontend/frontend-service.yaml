@@ -1,0 +1,19 @@
+# Service for load balancing frontend component
+kind: Service
+apiVersion: v1beta3
+metadata:
+  name: frontend
+  labels:
+    name: frontend
+spec:
+  # Expose service to http (not important as wil be handled by reverse-proxy)
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  # Match any frontend pod
+  selector:
+    name: frontend
+  # Any SSL requests will be terminated in the pods. Because of this we need to 
+  # enable routing users to the correct pod to correctly handle SSL sessions
+  sessionAffinity: ClientIP
