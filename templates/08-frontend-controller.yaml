@@ -15,25 +15,26 @@ spec:
         name: frontend
     spec:
       containers:
-        - name: frontent
-          image: the0rem/laravel-kubernetes:latest
+        - name: frontend
+          # image: dylanlindgren/docker-laravel-nginx
+          image: kubernetes/example-guestbook-php-redis:v2
           # Make sure we always get the latest image
           imagePullPolicy: Always
           ports:
             - containerPort: 80
               protocol: TCP
-          volumeMounts: 
-            - name: ssl-key-volume
-              mountPath: /etc/ssl-key-volume
-              readOnly: true
+          # volumeMounts: 
+          #   - name: ssl-key-volume
+          #     mountPath: /etc/ssl-key-volume
+          #     readOnly: true
           # Environment variables will be injected based upon environment choice
-          env: #env#
+          # env:
 
-      volumes: 
-        - name: ssl-key-volume
-          source: 
-            secret: 
-              secretName: ssl-key-secret
+      # volumes: 
+      #   - name: ssl-key-volume
+      #     source: 
+      #       secret: 
+      #         secretName: ssl-key-secret
         # - name: laravel-env-volume
         #   source: 
         #     hostPath: 

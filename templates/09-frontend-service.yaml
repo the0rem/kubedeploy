@@ -11,9 +11,11 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
+  publicIPs: #public-ips#
+
   # Match any frontend pod
   selector:
     name: frontend
   # Any SSL requests will be terminated in the pods. Because of this we need to 
   # enable routing users to the correct pod to correctly handle SSL sessions
-  sessionAffinity: ClientIP
+  # sessionAffinity: ClientIP
