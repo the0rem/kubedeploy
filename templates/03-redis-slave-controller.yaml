@@ -9,7 +9,6 @@ spec:
   replicas: 2
   selector:
     name: redis-slave
-
   template:
     metadata:
       labels:

@@ -1,0 +1,41 @@
+
+kind: ReplicationController
+apiVersion: v1beta3
+metadata:
+  name: frontend
+  labels:
+    name: frontend
+spec:
+  replicas: 3
+  selector:
+    name: frontend
+  template:
+    metadata:
+      labels:
+        name: frontend
+    spec:
+      containers:
+        - name: frontent
+          image: the0rem/laravel-kubernetes:latest
+          # Make sure we always get the latest image
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts: 
+            - name: ssl-key-volume
+              mountPath: /etc/ssl-key-volume
+              readOnly: true
+          # Environment variables will be injected based upon environment choice
+          env: #env#
+
+      volumes: 
+        - name: ssl-key-volume
+          source: 
+            secret: 
+              secretName: ssl-key-secret
+        # - name: laravel-env-volume
+        #   source: 
+        #     hostPath: 
+        #       path: ./dev/frontend-environment.yaml
+
