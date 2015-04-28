@@ -1,6 +1,0 @@
-
-  kind: Secret
-  id: laravel-env-volume
-  apiVersion: v1beta3
-  data:
-    
