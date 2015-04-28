@@ -1,0 +1,8 @@
+export DOCKER_HUB_USER=the0rem
+export DOCKER_HUB_EMAIL=shaun.smekel@theorem.net.au
+export DOCKER_HUB_PASS=yomama
+export DOCKER_PROJECT_NAME=laravel-docker
+export DOCKER_PROJECT_TAG=
+
+export FLEETCTL_ENDPOINT=http://172.17.8.101:4001
+export KUBERNETES_MASTER=http://172.17.8.101:8080
