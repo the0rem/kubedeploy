@@ -13,6 +13,7 @@ usage() {
 }
 
 containerEnvironmentsFile="env.yaml"
+externalIPsFile="public-ips.yaml"
 environment="dev"
 templatesDir="${PWD}/templates"
 environmentsDir="${PWD}/environments"
@@ -50,7 +51,10 @@ do
 
 done
 
-
+# 
+envFile="${environmentsDir}/${environment}/${containerEnvironmentsFile}"
+ipsFile="${environmentsDir}/${environment}/${externalIPsFile}"
+tmpFile="${buildDir}/tmp.yaml"
 
 # Make sure build dir exists
 [ -d ${buildDir} ] || mkdir -p ${buildDir}
@@ -85,12 +89,6 @@ if [ ! -f "${environmentsDir}/${environment}/${containerEnvironmentsFile}" ]; th
     exit 1
 fi
 
-envFile="${environmentsDir}/${environment}/${containerEnvironmentsFile}"
-# cp -v $envFile $buildDir
-# envFile="${buildDir}/${containerEnvironmentsFile}"
-# sed -i 's/[\/&]/\\&/g' $envFile
-# envData=cat $envFile
-
 # Build any environmental pods first to make sure the data is ready for other pods
 for file in $(find ${environmentsDir}/${environment} -exec echo '{}' \;); do 
     
@@ -103,18 +101,17 @@ done;
 # Build tempaltes using environmental variables
 for file in $(find ${templatesDir} -type f -exec echo '{}' \;); do 
 
-    # cp -v $file $buildDir
+    cp -v $file $buildDir
     destinationFile="$buildDir/$(basename ${file})"
 
 	# Inject env data into templates
 	if [[ $destinationFile == *.yaml ]]; then
-		# sed -i "s/{env}/${envData}/g" $destinationFile
-        # cat dist/08-frontend-controller.yaml | sed -e '/env:/{r env.yaml' -e '}'
-        spacing=egrep '(^\s).*#env#'
 
-        cat $file | sed -e "/#env#/{r $envFile" -e "}" > $destinationFile
-
-        sed -e '^'
+        cp -v $destinationFile $tmpFile
+		python yamlthingy.py --templatefile ${tmpFile} --marker "env: #env#" --contentfile ${envFile} --outputfile ${destinationFile}
+        cp -v $destinationFile $tmpFile
+        python yamlthingy.py --templatefile ${tmpFile} --marker "publicIPs: #public-ips#" --contentfile ${ipsFile} --outputfile ${destinationFile}
+        rm -v $tmpFile
 	fi
 
 done;
