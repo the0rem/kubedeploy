@@ -1,1 +1,3 @@
 dist
+.kubectl_dev
+.kubectl_prod
